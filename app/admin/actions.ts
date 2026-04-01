@@ -2,6 +2,7 @@
 
 import { ConvexHttpClient } from 'convex/browser';
 import { api } from '@/convex/_generated/api';
+import { Id } from '@/convex/_generated/dataModel';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -87,7 +88,7 @@ export async function revokeLicense(id: string) {
     if (!await checkAuth()) return { error: 'Unauthorized' };
 
     try {
-        await convex.mutation(api.licenses.revokeLicense, { id });
+        await convex.mutation(api.licenses.revokeLicense, { id: id as Id<"licenses"> });
         revalidatePath('/admin/dashboard');
         return { success: true };
     } catch (err) {
@@ -100,7 +101,7 @@ export async function resetMachineId(id: string) {
     if (!await checkAuth()) return { error: 'Unauthorized' };
 
     try {
-        await convex.mutation(api.licenses.resetMachineId, { id });
+        await convex.mutation(api.licenses.resetMachineId, { id: id as Id<"licenses"> });
         revalidatePath('/admin/dashboard');
         return { success: true };
     } catch (err) {
@@ -113,7 +114,7 @@ export async function deleteLicense(id: string) {
     if (!await checkAuth()) return { error: 'Unauthorized' };
 
     try {
-        await convex.mutation(api.licenses.deleteLicense, { id });
+        await convex.mutation(api.licenses.deleteLicense, { id: id as Id<"licenses"> });
         revalidatePath('/admin/dashboard');
         return { success: true };
     } catch (err) {
