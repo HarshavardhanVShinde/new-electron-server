@@ -122,7 +122,8 @@ export const createLicense = mutation({
       v.literal('StationMaster'),
       v.literal('MandiBill'),
       v.literal('OptiVision'),
-      v.literal('JewelleryPos')
+      v.literal('JewelleryPos'),
+      v.literal('Mangal Seva')
     ),
     planType: v.union(v.literal('Standard'), v.literal('Premium')),
     expiresAt: v.number(),
