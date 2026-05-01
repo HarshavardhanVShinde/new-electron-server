@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { Shield, ArrowRight, Server, Key, Lock } from 'lucide-react';
+import { Shield, Server, Key, Lock } from 'lucide-react';
 
 export default function Home() {
     return (
@@ -47,26 +46,19 @@ export default function Home() {
                     Secure software licensing API for managing and validating your application licenses.
                 </p>
 
-                <Link
-                    href="/admin/dashboard"
-                    style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        padding: '1rem 2rem',
-                        borderRadius: '0.875rem',
-                        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-                        color: 'white',
-                        fontWeight: '600',
-                        fontSize: '1.125rem',
-                        textDecoration: 'none',
-                        boxShadow: '0 10px 40px rgba(99, 102, 241, 0.4)',
-                        transition: 'all 0.3s'
-                    }}
-                >
-                    Open Dashboard
-                    <ArrowRight size={20} />
-                </Link>
+                <p style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '1rem 2rem',
+                    borderRadius: '0.875rem',
+                    background: 'rgba(30, 41, 59, 0.6)',
+                    color: '#94a3b8',
+                    fontWeight: '600',
+                    fontSize: '1rem',
+                }}>
+                    System Operational
+                </p>
             </div>
 
             {/* Features Grid */}

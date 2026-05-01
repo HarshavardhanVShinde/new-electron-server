@@ -1,9 +1,10 @@
-import { ConvexHttpClient } from 'convex/browser';
-import { api } from '@/convex/_generated/api';
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
-// Initialize Convex client
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+// Initialize Supabase admin client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function POST(request: Request) {
     try {
@@ -16,59 +17,82 @@ export async function POST(request: Request) {
             );
         }
 
-        // Call Convex mutation to verify and activate license
-        const result = await convex.mutation(api.licenses.verifyLicense, {
-            licenseKey,
-            machineId,
-        });
+        // 1. Fetch License
+        const { data: license, error } = await supabase
+            .from('licenses')
+            .select('*')
+            .eq('license_key', licenseKey)
+            .single();
 
-        // Get full license details
-        const licenseData = await convex.query(api.licenses.getLicenseByKey, {
-            licenseKey,
-        });
-
-        if (!licenseData) {
+        if (error || !license) {
             return NextResponse.json({ error: 'License not found' }, { status: 404 });
         }
 
-        // Check Software Type Match
-        if (softwareType && licenseData.softwareType && licenseData.softwareType !== softwareType) {
+        // 2. Check Software Type Match
+        if (softwareType && license.software_type && license.software_type !== softwareType) {
             return NextResponse.json(
-                { error: `License is for ${licenseData.softwareType}, not ${softwareType}` },
+                { error: `License is for ${license.software_type}, not ${softwareType}` },
                 { status: 403 }
             );
         }
 
-        return NextResponse.json({
-            valid: true,
-            expiry: new Date(licenseData.expiresAt).toISOString(),
-            license: {
-                licenseKey: licenseData.licenseKey,
-                machineId: licenseData.machineId,
-                clientName: licenseData.clientName,
-                softwareType: licenseData.softwareType,
-                planType: licenseData.planType,
-                status: licenseData.status,
-                expiresAt: new Date(licenseData.expiresAt).toISOString(),
-                activatedAt: licenseData.activatedAt ? new Date(licenseData.activatedAt).toISOString() : null,
-            },
-        });
-    } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Internal Server Error';
-        console.error('Verify API Error:', errorMessage);
-
-        if (errorMessage === 'License not found') {
-            return NextResponse.json({ error: errorMessage }, { status: 404 });
-        } else if (
-            errorMessage.includes('License is') ||
-            errorMessage === 'License Expired' ||
-            errorMessage === 'License expired'
-        ) {
-            return NextResponse.json({ error: errorMessage }, { status: 403 });
-        } else if (errorMessage.includes('already in use on another computer')) {
-            return NextResponse.json({ error: 'Device Mismatch' }, { status: 403 });
+        // 3. Check Status
+        if (license.status !== 'active') {
+            return NextResponse.json(
+                { error: `License is ${license.status}` },
+                { status: 403 }
+            );
         }
 
+        // 4. Check Expiry
+        const now = new Date();
+        const expiresAt = new Date(license.expires_at);
+        if (expiresAt < now) {
+            // Auto-update status to expired if needed, or just return error
+            return NextResponse.json({ error: 'License expired' }, { status: 403 });
+        }
+
+        // 5. Node Locking Logic
+        if (!license.machine_id) {
+            // Bind to this machine
+            const { error: updateError } = await supabase
+                .from('licenses')
+                .update({ machine_id: machineId })
+                .eq('id', license.id);
+
+            if (updateError) {
+                return NextResponse.json(
+                    { error: 'Failed to bind license' },
+                    { status: 500 }
+                );
+            }
+
+            return NextResponse.json({
+                valid: true,
+                expiry: license.expires_at,
+                license: {
+                    ...license,
+                    machine_id: machineId, // Return updated state
+                },
+            });
+        } else {
+            // Check match
+            if (license.machine_id === machineId) {
+                return NextResponse.json({
+                    valid: true,
+                    expiry: license.expires_at,
+                    license,
+                });
+            } else {
+                return NextResponse.json(
+                    // Return 403 Device Mismatch as requested
+                    { error: 'Device Mismatch' },
+                    { status: 403 }
+                );
+            }
+        }
+    } catch (err) {
+        console.error('Verify API Error:', err);
         return NextResponse.json(
             { error: 'Internal Server Error' },
             { status: 500 }

@@ -142,8 +142,8 @@ export function DashboardUI({ licenses }: { licenses: any[] }) {
 
     // Stats
     const totalLicenses = licenses.length;
-    const activeLicenses = licenses.filter((l: any) => l.status === 'active').length;
-    const lockedLicenses = licenses.filter((l: any) => l.machineId).length;
+    const activeLicenses = licenses.filter(l => l.status === 'active').length;
+    const lockedLicenses = licenses.filter(l => l.machine_id).length;
 
     return (
         <div style={{
@@ -272,11 +272,11 @@ export function DashboardUI({ licenses }: { licenses: any[] }) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {licenses.map((lic: any) => (
-                                    <tr key={lic._id} style={{ borderTop: '1px solid rgba(51, 65, 85, 0.5)' }}>
-                                        <td style={{ padding: '1rem', color: 'white', fontWeight: '500' }}>{lic.clientName}</td>
+                                {licenses.map((lic) => (
+                                    <tr key={lic.id} style={{ borderTop: '1px solid rgba(51, 65, 85, 0.5)' }}>
+                                        <td style={{ padding: '1rem', color: 'white', fontWeight: '500' }}>{lic.client_name}</td>
                                         <td style={{ padding: '1rem' }}>
-                                            <SoftwareBadge type={lic.softwareType} />
+                                            <SoftwareBadge type={lic.software_type} />
                                         </td>
                                         <td style={{ padding: '1rem' }}>
                                             <span style={{
@@ -284,10 +284,10 @@ export function DashboardUI({ licenses }: { licenses: any[] }) {
                                                 borderRadius: '0.5rem',
                                                 fontSize: '0.75rem',
                                                 fontWeight: '500',
-                                                background: lic.planType === 'Premium' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(100, 116, 139, 0.2)',
-                                                color: lic.planType === 'Premium' ? '#c4b5fd' : '#94a3b8'
+                                                background: lic.plan_type === 'Premium' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(100, 116, 139, 0.2)',
+                                                color: lic.plan_type === 'Premium' ? '#c4b5fd' : '#94a3b8'
                                             }}>
-                                                {lic.planType}
+                                                {lic.plan_type}
                                             </span>
                                         </td>
                                         <td style={{ padding: '1rem' }}>
@@ -299,7 +299,7 @@ export function DashboardUI({ licenses }: { licenses: any[] }) {
                                                 borderRadius: '0.375rem',
                                                 fontFamily: 'monospace'
                                             }}>
-                                                {lic.licenseKey}
+                                                {lic.license_key}
                                             </code>
                                         </td>
                                         <td style={{ padding: '1rem' }}>
@@ -314,21 +314,21 @@ export function DashboardUI({ licenses }: { licenses: any[] }) {
                                             overflow: 'hidden',
                                             textOverflow: 'ellipsis',
                                             whiteSpace: 'nowrap'
-                                        }} title={lic.machineId}>
-                                            {lic.machineId || <span style={{ color: '#475569', fontStyle: 'italic' }}>Not locked</span>}
+                                        }} title={lic.machine_id}>
+                                            {lic.machine_id || <span style={{ color: '#475569', fontStyle: 'italic' }}>Not locked</span>}
                                         </td>
                                         <td style={{ padding: '1rem', fontSize: '0.875rem', color: '#94a3b8' }}>
-                                            {new Date(lic.expiresAt).toISOString().split('T')[0]}
+                                            {new Date(lic.expires_at).toISOString().split('T')[0]}
                                         </td>
                                         <td style={{ padding: '1rem', textAlign: 'right' }}>
                                             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                                                {lic.machineId && (
+                                                {lic.machine_id && (
                                                     <ActionButton
                                                         icon={<RefreshCw size={14} />}
                                                         title="Reset Machine ID"
                                                         color="#f59e0b"
                                                         onClick={async () => {
-                                                            if (confirm('Reset machine ID?')) await resetMachineId(lic._id);
+                                                            if (confirm('Reset machine ID?')) await resetMachineId(lic.id);
                                                         }}
                                                     />
                                                 )}
@@ -338,7 +338,7 @@ export function DashboardUI({ licenses }: { licenses: any[] }) {
                                                         title="Revoke License"
                                                         color="#ef4444"
                                                         onClick={async () => {
-                                                            if (confirm('Ban this license?')) await revokeLicense(lic._id);
+                                                            if (confirm('Ban this license?')) await revokeLicense(lic.id);
                                                         }}
                                                     />
                                                 )}
@@ -347,7 +347,7 @@ export function DashboardUI({ licenses }: { licenses: any[] }) {
                                                     title="Delete License"
                                                     color="#64748b"
                                                     onClick={async () => {
-                                                        if (confirm('Permanently delete?')) await deleteLicense(lic._id);
+                                                        if (confirm('Permanently delete?')) await deleteLicense(lic.id);
                                                     }}
                                                 />
                                             </div>
@@ -412,7 +412,7 @@ function SoftwareBadge({ type }: { type: string }) {
         StationMaster: { bg: 'rgba(168, 85, 247, 0.2)', color: '#d8b4fe' },
         MandiBill: { bg: 'rgba(34, 197, 94, 0.2)', color: '#86efac' },
         OptiVision: { bg: 'rgba(236, 72, 153, 0.2)', color: '#f9a8d4' },
-        JewelleryPos: { bg: 'rgba(245, 158, 11, 0.2)', color: '#fcd34d' },
+        'Mangal Seva': { bg: 'rgba(153, 27, 27, 0.2)', color: '#fca5a5' },
     };
     const style = config[type] || config.UrbanBill;
     return (
@@ -611,13 +611,13 @@ function GenerateModal({ onClose }: { onClose: () => void }) {
                                 Software Type
                             </label>
                             <select name="softwareType" style={inputStyle}>
-                                <option value="JewelleryPos">💎 JewelleryPos (Jewellery POS)</option>
                                 <option value="UrbanBill">💳 UrbanBill (Billing Software)</option>
                                 <option value="MediBill">💊 MediBill (Medical Billing)</option>
                                 <option value="KiranaBill">🛒 KiranaBill (Kirana Shop)</option>
                                 <option value="StationMaster">📝 StationMaster (Stationary Billing)</option>
                                 <option value="MandiBill">🌾 MandiBill (Mandi/Agriculture Billing)</option>
                                 <option value="OptiVision">👓 OptiVision (Optical Store)</option>
+                                <option value="Mangal Seva">🎪 Mangal Seva (Rentals)</option>
                             </select>
                         </div>
 
