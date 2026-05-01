@@ -13,7 +13,8 @@ export default defineSchema({
       v.literal('StationMaster'),
       v.literal('MandiBill'),
       v.literal('OptiVision'),
-      v.literal('JewelleryPos')
+      v.literal('JewelleryPos'),
+      v.literal('Mangal Seva')
     ),
     planType: v.union(v.literal('Standard'), v.literal('Premium')),
     status: v.union(

@@ -7,7 +7,7 @@ CREATE TABLE licenses (
   license_key TEXT UNIQUE NOT NULL,
   machine_id TEXT DEFAULT NULL,
   client_name TEXT NOT NULL,
-  software_type TEXT CHECK (software_type IN ('UrbanBill', 'MediBill', 'KiranaBill', 'StationMaster', 'MandiBill', 'OptiVision', 'Mangal Seva')) NOT NULL DEFAULT 'UrbanBill',
+  software_type TEXT CHECK (software_type IN ('UrbanBill', 'MediBill', 'KiranaBill', 'StationMaster', 'MandiBill', 'OptiVision')) NOT NULL DEFAULT 'UrbanBill',
   plan_type TEXT CHECK (plan_type IN ('Standard', 'Premium')) NOT NULL,
   status TEXT CHECK (status IN ('active', 'banned', 'expired')) DEFAULT 'active',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),

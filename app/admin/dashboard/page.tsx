@@ -1,8 +1,11 @@
 import { checkAuth } from '../actions';
 import { DashboardUI, LoginForm } from './DashboardClient';
-import { createClient } from '@supabase/supabase-js';
+import { ConvexHttpClient } from 'convex/browser';
+import { api } from '@/convex/_generated/api';
 
 export const dynamic = 'force-dynamic';
+
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export default async function AdminPage() {
     const isAuth = await checkAuth();
@@ -11,16 +14,8 @@ export default async function AdminPage() {
         return <LoginForm />;
     }
 
-    // Fetch licenses
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-    // Note: Using service key here because RLS might block reading 'licenses' for anon
-    const { data: licenses } = await supabase
-        .from('licenses')
-        .select('*')
-        .order('created_at', { ascending: false });
+    // Fetch licenses from Convex
+    const licenses = await convex.query(api.licenses.getAllLicenses, {});
 
     return <DashboardUI licenses={licenses || []} />;
 }
