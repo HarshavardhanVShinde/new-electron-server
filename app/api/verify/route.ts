@@ -2,8 +2,14 @@ import { ConvexHttpClient } from 'convex/browser';
 import { api } from '@/convex/_generated/api';
 import { NextResponse } from 'next/server';
 
-// Initialize Convex client
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+// Lazy-initialize Convex client to avoid build-time crash
+let convex: ConvexHttpClient | null = null;
+function getConvex() {
+  if (!convex) {
+    convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+  }
+  return convex;
+}
 
 export async function POST(request: Request) {
     try {
@@ -17,13 +23,13 @@ export async function POST(request: Request) {
         }
 
         // Call Convex mutation to verify and activate license
-        const result = await convex.mutation(api.licenses.verifyLicense, {
+        const result = await getConvex().mutation(api.licenses.verifyLicense, {
             licenseKey,
             machineId,
         });
 
         // Get full license details
-        const licenseData = await convex.query(api.licenses.getLicenseByKey, {
+        const licenseData = await getConvex().query(api.licenses.getLicenseByKey, {
             licenseKey,
         });
 
