@@ -10,8 +10,14 @@ import { redirect } from 'next/navigation';
 // Admin Auth Password — use env variable in production
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin-secret-password';
 
-// Convex client
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+// Convex client — lazy init to avoid build-time crash
+let _convex: ConvexHttpClient | null = null;
+function getConvex() {
+  if (!_convex) {
+    _convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+  }
+  return _convex;
+}
 
 // --- Auth Actions ---
 
@@ -68,7 +74,7 @@ export async function generateLicense(
     expiresAt.setDate(expiresAt.getDate() + validityDays);
 
     try {
-        const result = await convex.mutation(api.licenses.createLicense, {
+        const result = await getConvex().mutation(api.licenses.createLicense, {
             licenseKey: customKey,
             clientName,
             softwareType: softwareType as any,
@@ -88,7 +94,7 @@ export async function revokeLicense(id: string) {
     if (!await checkAuth()) return { error: 'Unauthorized' };
 
     try {
-        await convex.mutation(api.licenses.revokeLicense, { id: id as Id<"licenses"> });
+        await getConvex().mutation(api.licenses.revokeLicense, { id: id as Id<"licenses"> });
         revalidatePath('/admin/dashboard');
         return { success: true };
     } catch (err) {
@@ -101,7 +107,7 @@ export async function resetMachineId(id: string) {
     if (!await checkAuth()) return { error: 'Unauthorized' };
 
     try {
-        await convex.mutation(api.licenses.resetMachineId, { id: id as Id<"licenses"> });
+        await getConvex().mutation(api.licenses.resetMachineId, { id: id as Id<"licenses"> });
         revalidatePath('/admin/dashboard');
         return { success: true };
     } catch (err) {
@@ -114,7 +120,7 @@ export async function deleteLicense(id: string) {
     if (!await checkAuth()) return { error: 'Unauthorized' };
 
     try {
-        await convex.mutation(api.licenses.deleteLicense, { id: id as Id<"licenses"> });
+        await getConvex().mutation(api.licenses.deleteLicense, { id: id as Id<"licenses"> });
         revalidatePath('/admin/dashboard');
         return { success: true };
     } catch (err) {

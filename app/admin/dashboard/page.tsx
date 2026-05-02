@@ -5,7 +5,13 @@ import { api } from '@/convex/_generated/api';
 
 export const dynamic = 'force-dynamic';
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+let _convex: ConvexHttpClient | null = null;
+function getConvex() {
+  if (!_convex) {
+    _convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+  }
+  return _convex;
+}
 
 export default async function AdminPage() {
     const isAuth = await checkAuth();
@@ -15,7 +21,7 @@ export default async function AdminPage() {
     }
 
     // Fetch licenses from Convex
-    const licenses = await convex.query(api.licenses.getAllLicenses, {});
+    const licenses = await getConvex().query(api.licenses.getAllLicenses, {});
 
     return <DashboardUI licenses={licenses || []} />;
 }
