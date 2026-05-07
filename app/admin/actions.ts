@@ -61,10 +61,9 @@ export async function generateLicense(
             .join('');
     };
 
-    // Format: SV-XXXX-XXXX-XXXX (prefixed for JewelleryPos)
-    const prefix = softwareType === 'JewelleryPos' ? 'SV' : softwareType.substring(0, 2).toUpperCase();
+    // Format: XXXX-XXXX-XXXX-XXXX (4 segments of 4 characters)
     const customKey = [
-        prefix,
+        generateSegment(4),
         generateSegment(4),
         generateSegment(4),
         generateSegment(4)

@@ -7,7 +7,7 @@ ALTER TABLE licenses DROP CONSTRAINT IF EXISTS licenses_software_type_check;
 
 -- 2. Add the updated constraint including 'JewelleryPos'
 ALTER TABLE licenses ADD CONSTRAINT licenses_software_type_check 
-  CHECK (software_type IN ('UrbanBill', 'MediBill', 'KiranaBill', 'StationMaster', 'MandiBill', 'OptiVision', 'JewelleryPos'));
+  CHECK (software_type IN ('UrbanBill', 'MediBill', 'KiranaBill', 'StationMaster', 'MandiBill', 'OptiVision', 'JewelleryPos','Mangal Seva'));
 
 -- 3. (Optional) Insert a test license for JewelleryPos
 -- INSERT INTO licenses (license_key, client_name, software_type, plan_type, status, expires_at)
