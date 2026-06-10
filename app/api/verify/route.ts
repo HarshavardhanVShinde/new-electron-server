@@ -26,6 +26,7 @@ export async function POST(request: Request) {
         const result = await getConvex().mutation(api.licenses.verifyLicense, {
             licenseKey,
             machineId,
+            softwareType,
         });
 
         // Get full license details
@@ -38,9 +39,9 @@ export async function POST(request: Request) {
         }
 
         // Check Software Type Match
-        if (softwareType && licenseData.softwareType && licenseData.softwareType !== softwareType) {
+        if (softwareType && result.license?.softwareType && result.license.softwareType !== softwareType) {
             return NextResponse.json(
-                { error: `License is for ${licenseData.softwareType}, not ${softwareType}` },
+                { error: `License is for ${result.license.softwareType}, not ${softwareType}` },
                 { status: 403 }
             );
         }

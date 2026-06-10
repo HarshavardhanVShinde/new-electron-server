@@ -26,6 +26,7 @@ export async function POST(request: Request) {
     const result = await getConvex().mutation(api.licenses.verifyLicense, {
       licenseKey,
       machineId,
+      softwareType,
     });
 
     const license = result.license;

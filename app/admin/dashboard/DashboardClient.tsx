@@ -414,6 +414,8 @@ function SoftwareBadge({ type }: { type: string }) {
         OptiVision: { bg: 'rgba(236, 72, 153, 0.2)', color: '#f9a8d4' },
         JewelleryPos: { bg: 'rgba(245, 158, 11, 0.2)', color: '#fcd34d' },
         'Mangal Seva': { bg: 'rgba(153, 27, 27, 0.2)', color: '#fca5a5' },
+        TailorShop: { bg: 'rgba(20, 184, 166, 0.2)', color: '#5eead4' },
+        GarmentsSoftware: { bg: 'rgba(14, 165, 233, 0.2)', color: '#7dd3fc' },
     };
     const style = config[type] || config.UrbanBill;
     return (
@@ -620,6 +622,8 @@ function GenerateModal({ onClose }: { onClose: () => void }) {
                                 <option value="MandiBill">🌾 MandiBill (Mandi/Agriculture Billing)</option>
                                 <option value="OptiVision">👓 OptiVision (Optical Store)</option>
                                 <option value="Mangal Seva">🎪 Mangal Seva (Rentals)</option>
+                                <option value="TailorShop">TailorShop (Tailor Software)</option>
+                                <option value="GarmentsSoftware">GarmentsSoftware (Garments Billing)</option>
                             </select>
                         </div>
 

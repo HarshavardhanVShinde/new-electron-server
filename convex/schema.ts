@@ -14,7 +14,9 @@ export default defineSchema({
       v.literal('MandiBill'),
       v.literal('OptiVision'),
       v.literal('JewelleryPos'),
-      v.literal('Mangal Seva')
+      v.literal('Mangal Seva'),
+      v.literal('TailorShop'),
+      v.literal('GarmentsSoftware')
     ),
     planType: v.union(v.literal('Standard'), v.literal('Premium')),
     status: v.union(

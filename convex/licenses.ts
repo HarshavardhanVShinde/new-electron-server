@@ -21,8 +21,9 @@ export const verifyLicense = mutation({
   args: {
     licenseKey: v.string(),
     machineId: v.string(),
+    softwareType: v.optional(v.string()),
   },
-  handler: async (ctx, { licenseKey, machineId }) => {
+  handler: async (ctx, { licenseKey, machineId, softwareType }) => {
     // 1. Find the license
     const license = await ctx.db
       .query('licenses')
@@ -44,7 +45,12 @@ export const verifyLicense = mutation({
       throw new Error('License Expired');
     }
 
-    // 4. First Activation (Locking to machine)
+    // 4. Check software type before locking the license to this machine
+    if (softwareType && license.softwareType && license.softwareType !== softwareType) {
+      throw new Error(`License is for ${license.softwareType}, not ${softwareType}`);
+    }
+
+    // 5. First Activation (Locking to machine)
     if (license.machineId === null || license.machineId === undefined) {
       await ctx.db.patch(license._id, {
         machineId,
@@ -62,7 +68,7 @@ export const verifyLicense = mutation({
       };
     }
 
-    // 5. Re-Validation (check if device matches)
+    // 6. Re-Validation (check if device matches)
     if (license.machineId === machineId) {
       return {
         success: true,
@@ -123,7 +129,9 @@ export const createLicense = mutation({
       v.literal('MandiBill'),
       v.literal('OptiVision'),
       v.literal('JewelleryPos'),
-      v.literal('Mangal Seva')
+      v.literal('Mangal Seva'),
+      v.literal('TailorShop'),
+      v.literal('GarmentsSoftware')
     ),
     planType: v.union(v.literal('Standard'), v.literal('Premium')),
     expiresAt: v.number(),
