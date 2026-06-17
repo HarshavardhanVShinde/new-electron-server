@@ -131,7 +131,8 @@ export const createLicense = mutation({
       v.literal('JewelleryPos'),
       v.literal('Mangal Seva'),
       v.literal('TailorShop'),
-      v.literal('GarmentsSoftware')
+      v.literal('GarmentsSoftware'),
+      v.literal('DryCleaning Pro')
     ),
     planType: v.union(v.literal('Standard'), v.literal('Premium')),
     expiresAt: v.number(),
