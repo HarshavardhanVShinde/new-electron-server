@@ -1,21 +1,23 @@
 {
-  "name": "electronnextserver",
+  "name": "electron-server",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite preview",
+    "preview": "npm run build && wrangler dev",
+    "dev:worker": "wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
+    "cf:typegen": "wrangler types",
+    "lint": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "convex": "^1.15.0",
     "lucide-react": "^0.562.0",
-    "next": "^16.1.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },
@@ -23,9 +25,12 @@
     "@types/node": "^25.0.3",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "latest",
     "autoprefixer": "^10.4.23",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "latest",
+    "wrangler": "^4.118.0"
   }
 }

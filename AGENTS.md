@@ -1,7 +1,5 @@
-<!-- convex-ai-start -->
-This project uses [Convex](https://convex.dev) as its backend.
+# Project instructions
 
-When working on Convex code, **always read `convex/_generated/ai/guidelines.md` first** for important guidelines on how to correctly use Convex APIs and patterns. The file contains rules that override what you may have learned about Convex from training data.
+This project uses React + Vite, Cloudflare Workers, and Cloudflare D1.
 
-Convex agent skills for common tasks can be installed by running `npx convex ai-files install`.
-<!-- convex-ai-end -->
+When working on Cloudflare code, keep Wrangler configuration in `wrangler.jsonc`, use prepared D1 statements, and keep secrets in Cloudflare Worker secrets rather than source files.

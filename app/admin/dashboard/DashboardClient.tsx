@@ -10,7 +10,14 @@ export function LoginForm() {
 
     async function onSubmit(formData: FormData) {
         setIsLoading(true);
+        setError('');
         const res = await loginAction(formData);
+        if (res?.success) {
+            // The Worker sets the HttpOnly session cookie on this request.
+            // Reload so App.tsx re-checks authentication and renders the dashboard.
+            window.location.reload();
+            return;
+        }
         if (res?.error) setError(res.error);
         setIsLoading(false);
     }
@@ -60,12 +67,36 @@ export function LoginForm() {
                 <form action={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <div>
                         <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+                            Admin ID
+                        </label>
+                        <input
+                            name="id"
+                            type="text"
+                            placeholder="Enter your admin ID"
+                            autoComplete="username"
+                            required
+                            style={{
+                                width: '100%',
+                                padding: '0.875rem 1rem',
+                                background: 'rgba(15, 23, 42, 0.6)',
+                                border: '1px solid rgba(100, 116, 139, 0.3)',
+                                borderRadius: '0.75rem',
+                                color: 'white',
+                                fontSize: '1rem',
+                                outline: 'none',
+                                transition: 'all 0.2s'
+                            }}
+                        />
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#cbd5e1', marginBottom: '0.5rem' }}>
                             Admin Password
                         </label>
                         <input
                             name="password"
                             type="password"
                             placeholder="Enter your password"
+                            autoComplete="current-password"
                             required
                             style={{
                                 width: '100%',
