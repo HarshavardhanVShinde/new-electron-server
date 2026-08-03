@@ -91,7 +91,7 @@ export default function Home() {
                 <FeatureCard
                     icon={<Key style={{ width: '1.5rem', height: '1.5rem' }} />}
                     title="Multi-Software"
-                    description="Support for UrbanBill, MediBill & KiranaBill"
+                    description="Support for UrbanBill, MediBill, KiranaBill & BSS-Smartbill"
                 />
             </div>
 

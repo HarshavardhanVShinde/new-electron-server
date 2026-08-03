@@ -417,6 +417,7 @@ function SoftwareBadge({ type }: { type: string }) {
         TailorShop: { bg: 'rgba(20, 184, 166, 0.2)', color: '#5eead4' },
         GarmentsSoftware: { bg: 'rgba(14, 165, 233, 0.2)', color: '#7dd3fc' },
         'DryCleaning Pro': { bg: 'rgba(99, 102, 241, 0.2)', color: '#c4b5fd' },
+        'BSS-Smartbill': { bg: 'rgba(34, 211, 238, 0.2)', color: '#67e8f9' },
     };
     const style = config[type] || config.UrbanBill;
     return (
@@ -625,6 +626,7 @@ function GenerateModal({ onClose }: { onClose: () => void }) {
                                 <option value="Mangal Seva">🎪 Mangal Seva (Rentals)</option>
                                 <option value="TailorShop">TailorShop (Tailor Software)</option>
                                 <option value="GarmentsSoftware">GarmentsSoftware (Garments Billing)</option>
+                                <option value="BSS-Smartbill">BSS-Smartbill (v1.0.0)</option>
                                 <option value="DryCleaning Pro">DryCleaning Pro (Laundry & Dry Cleaning)</option>
                             </select>
                         </div>
